@@ -1,0 +1,39 @@
+{
+  "name": "paragonie/gpg-mailer",
+  "description": "Encrypt outbound emails with Crypt_GPG",
+  "license": [
+    "GPL-3.0+",
+    "proprietary"
+  ],
+  "authors": [
+    {
+      "name": "Paragon Initiative Enterprises",
+      "email": "info@paragonie.com",
+      "homepage": "https://paragonie.com",
+      "role": "Development Team"
+    }
+  ],
+  "keywords": [
+    "Cryptography",
+    "Email",
+    "GPG",
+    "GnuPG",
+    "Mailer"
+  ],
+  "homepage": "https://paragonie.com",
+  "type": "library",
+  "autoload": {
+    "psr-4": {
+      "ParagonIE\\GPGMailer\\": "src/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  },
+  "require": {
+    "php": "^7.0",
+    "ext-openssl": "*",
+    "zendframework/zend-mail": "^2.7",
+    "pear/crypt_gpg": "^1.4"
+  }
+}
