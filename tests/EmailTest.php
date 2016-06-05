@@ -65,8 +65,8 @@ VwqMEizDUfrXgtD1siQGhP0sVC6qha+F/SAEJ0jEquM4TfKWWU2S5V5vgPPpIQSYRnhQW4b1
         $fingerprint = $gpgMailer->import($publicKey);
         $exported = $gpgMailer->export($fingerprint);
         $this->assertSame(
-            \str_replace(["\r", "\n"], '', $publicKey),
-            \str_replace(["\r", "\n"], '', $exported)
+            $this->stripComment($publicKey),
+            $this->stripComment($exported)
         );
         $this->assertSame(
             '7F52D5C61D1255C731362E826B97A1C2826404DA',
@@ -78,5 +78,16 @@ VwqMEizDUfrXgtD1siQGhP0sVC6qha+F/SAEJ0jEquM4TfKWWU2S5V5vgPPpIQSYRnhQW4b1
         $this->assertTrue(
             \strpos($body, '-----BEGIN PGP MESSAGE-----') !== false
         );
+    }
+
+    protected function stripComment(string $input): string
+    {
+        $pieces = \explode("\n", $input);
+        foreach ($pieces as $i => $piece) {
+            if (\preg_match('/^Version:/', $piece)) {
+                unset($pieces[$i]);
+            }
+        }
+        return \str_replace("\r", '', \implode('', $pieces));
     }
 }
