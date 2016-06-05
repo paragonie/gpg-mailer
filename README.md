@@ -1,5 +1,7 @@
 # GPG-Mailer
 
+[![Build Status](https://travis-ci.org/paragonie/gpg-mailer.svg?branch=master)](https://travis-ci.org/paragonie/gpg-mailer)
+
 Send GPG-encrypted emails (using [zend-mail](https://github.com/zendframework/zend-mail)
 and [Crypt_GPG](https://github.com/pear/Crypt_GPG)).
 
