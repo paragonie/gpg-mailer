@@ -25,7 +25,7 @@ class EmailTest extends PHPUnit_Framework_TestCase
         );
 
         $publicKey = '-----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: SKS 1.1.5
+Version: GnuPG v1
 
 mQENBFUgwRUBCADcIpqNwyYc5UmY/tpx1sF/rQ3knR1YNXYZThzFV+Gmqhp1fDH5qBs9foh1
 xwI6O7knWmQngnf/nBumI3x6xj7PuOdEZUh2FwCG/VWnglW8rKmoHzHAivjiu9SLnPIPAgHS
@@ -63,6 +63,11 @@ VwqMEizDUfrXgtD1siQGhP0sVC6qha+F/SAEJ0jEquM4TfKWWU2S5V5vgPPpIQSYRnhQW4b1
 -----END PGP PUBLIC KEY BLOCK-----';
 
         $fingerprint = $gpgMailer->import($publicKey);
+        $exported = $gpgMailer->export($fingerprint);
+        $this->assertSame(
+            \str_replace(["\r", "\n"], '', $publicKey),
+            \str_replace(["\r", "\n"], '', $exported)
+        );
         $this->assertSame(
             '7F52D5C61D1255C731362E826B97A1C2826404DA',
             $fingerprint

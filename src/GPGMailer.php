@@ -37,13 +37,27 @@ class GPGMailer
     }
 
     /**
+     * Get the public key corresponding to a fingerprint.
+     *
+     * @param string $fingerprint
+     * @return string
+     */
+    public function export(string $fingerprint): string
+    {
+        $gnupg = new \Crypt_GPG($this->options);
+        $gnupg->addEncryptKey($fingerprint);
+        return $gnupg->exportPublicKey($fingerprint, true);
+    }
+
+    /**
+     * Encrypt the body of an email.
+     *
      * @param Message $message
      * @param string $fingerprint
      * @return Message
      */
     public function encrypt(Message $message, string $fingerprint): Message
     {
-
         $gnupg = new \Crypt_GPG($this->options);
         $gnupg->addEncryptKey($fingerprint);
 
