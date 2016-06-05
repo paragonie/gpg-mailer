@@ -3,6 +3,7 @@
   "description": "Encrypt outbound emails with Crypt_GPG",
   "license": [
     "GPL-3.0+",
+    "MIT",
     "proprietary"
   ],
   "authors": [
