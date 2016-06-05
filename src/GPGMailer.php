@@ -54,19 +54,6 @@ class GPGMailer
     }
 
     /**
-     * Encrypt then email a message
-     *
-     * @param Message $message    The message data
-     * @param string $fingerprint Which public key fingerprint to use
-     */
-    public function send(Message $message, string $fingerprint)
-    {
-        $this->mailer->send(
-            $this->encrypt($message, $fingerprint)
-        );
-    }
-
-    /**
      * Import a public key, return the fingerprint
      *
      * @param string $publicKey
@@ -83,5 +70,18 @@ class GPGMailer
         } catch (\Crypt_GPG_Exception $ex) {
             return '';
         }
+    }
+
+    /**
+     * Encrypt then email a message
+     *
+     * @param Message $message    The message data
+     * @param string $fingerprint Which public key fingerprint to use
+     */
+    public function send(Message $message, string $fingerprint)
+    {
+        $this->mailer->send(
+            $this->encrypt($message, $fingerprint)
+        );
     }
 }
