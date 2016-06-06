@@ -33,7 +33,6 @@
   },
   "require": {
     "php": "^7.0",
-    "ext-openssl": "*",
     "zendframework/zend-mail": "^2.7",
     "pear/crypt_gpg": "^1.4"
   }
