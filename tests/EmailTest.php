@@ -1,7 +1,7 @@
 <?php
 use \ParagonIE\GPGMailer\GPGMailer;
 use \Zend\Mail\Message;
-use \Zend\Mail\Transport\Sendmail;
+use \Zend\Mail\Transport\File;
 
 class EmailTest extends PHPUnit_Framework_TestCase
 {
@@ -13,7 +13,7 @@ class EmailTest extends PHPUnit_Framework_TestCase
     {
         // Instantiate GPGMailer:
         $gpgMailer = new GPGMailer(
-            new Sendmail(),
+            new File(),
             ['homedir' => '~']
         );
 
@@ -46,7 +46,7 @@ class EmailTest extends PHPUnit_Framework_TestCase
 
         // Instantiate GPGMailer:
         $gpgMailer = new GPGMailer(
-            new Sendmail(),
+            new File(),
             ['homedir' => '~']
         );
 
@@ -85,7 +85,7 @@ class EmailTest extends PHPUnit_Framework_TestCase
 
         // Instantiate GPGMailer:
         $gpgMailer = new GPGMailer(
-            new Sendmail(),
+            new File(),
             ['homedir' => '~'],
             $privateKey
         );
