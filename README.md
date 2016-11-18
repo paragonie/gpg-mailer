@@ -138,7 +138,6 @@ GPGMailer constructor.
 ```php
 <?php
 
-<?php
 use \ParagonIE\GPGMailer\GPGMailer;
 use \Zend\Mail\Message;
 use \Zend\Mail\Transport\Sendmail;
