@@ -76,6 +76,7 @@ If you're encrypting with a user provided public key (and they didn't tell you
 their fingerprint), do this instead:
 
 ```php
+<?php
 
 /**
  * Output from: gpg --armor --export user@example.com
@@ -131,7 +132,11 @@ $fingerprint = $gpgMailer->import($ASCIIArmoredPublicKey);
 
 ### Signed and Encrypted
 
+To add signing, we pass the signing key to the third argument of the
+GPGMailer constructor.
+
 ```php
+<?php
 
 <?php
 use \ParagonIE\GPGMailer\GPGMailer;
@@ -143,6 +148,8 @@ $message = new Message;
 $message->addTo('test@example.com', 'Test Email');
 $message->setBody('Cleartext for now. Do not worry; this gets encrypted.');
 
+$signingKey = file_get_contents('tests/private.key');
+
 // Instantiate GPGMailer:
 $gpgMailer = new GPGMailer(
     new Sendmail(), 
@@ -150,13 +157,24 @@ $gpgMailer = new GPGMailer(
     $signingKey
 );
 
-$signingKey = file_get_contents('tests/private.key');
-
 // GPG public key for <security@paragonie.com> (fingerprint):
 $fingerprint = '7F52D5C61D1255C731362E826B97A1C2826404DA';
 
 // Finally:
 $gpgMailer->send($message, $fingerprint); 
+```
+
+Alternatively, we could define our constructor as above but then use
+`setPrivateKey()` like so:
+
+```php
+$gpgMailer = new GPGMailer(
+    new Sendmail(), 
+    ['homedir' => '/homedir/containing/keyring']
+);
+
+$signingKey = file_get_contents('tests/private.key');
+$gpgMailer->setPrivateKey($signingKey);
 ```
 
 ### Signed, But Not Encrypted
