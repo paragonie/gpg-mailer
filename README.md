@@ -5,6 +5,11 @@
 Send GPG-encrypted emails (using [zend-mail](https://github.com/zendframework/zend-mail)
 and [Crypt_GPG](https://github.com/pear/Crypt_GPG)).
 
+License: Any or all of the following:
+
+ * MIT
+ * GPLv3
+
 ## The GPG-Mailer API in a Nutshell
 
 ```php
