@@ -32,6 +32,7 @@ class GPGMailer
      * GPGMailer constructor.
      * @param TransportInterface $transport
      * @param array $options For Crypt_GPG
+     * @param string $serverKey
      */
     public function __construct(
         TransportInterface $transport,
@@ -95,7 +96,7 @@ class GPGMailer
     }
 
     /**
-     * Encrypt the body of an email.
+     * Encrypt and sign the body of an email.
      *
      * @param Message $message
      * @param string $fingerprint
@@ -168,7 +169,7 @@ class GPGMailer
     }
 
     /**
-     * Encrypt then email a message
+     * Email a message without encrypting it.
      *
      * @param Message $message The message data
      * @param bool $force      Send even if we don't have a private key?
@@ -204,7 +205,7 @@ class GPGMailer
      * Sign a message (but don't encrypt)
      *
      * @param Message $message
-     * @return string
+     * @return Message
      * @throws \Exception
      */
     public function sign(Message $message): Message
@@ -225,13 +226,12 @@ class GPGMailer
         return $message;
     }
 
-
     /**
      * Verify a message
      *
      * @param Message $message
      * @param string $fingerprint
-     * @return string
+     * @return bool
      * @throws \Exception
      */
     public function verify(Message $message, string $fingerprint): bool
