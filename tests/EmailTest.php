@@ -20,7 +20,7 @@ class EmailTest extends PHPUnit_Framework_TestCase
         $publicKey = file_get_contents(__DIR__ . '/public.key');
         $fingerprint = $gpgMailer->import($publicKey);
         $this->assertSame(
-            '61ED8025A6A602BED499590DE0585BBD212C89BF',
+            '1B6EFC02852A489B8162033CC7C64BB7CA403A7E',
             $fingerprint
         );
 
