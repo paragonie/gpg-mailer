@@ -26,7 +26,7 @@ class GPGMailer
     /**
      * @var string
      */
-    protected $serverKeyFingerprint;
+    protected $serverKeyFingerprint = '';
 
     /**
      * GPGMailer constructor.
@@ -152,6 +152,7 @@ class GPGMailer
      *
      * @param Message $message    The message data
      * @param string $fingerprint Which public key fingerprint to use
+     * @return void
      */
     public function send(Message $message, string $fingerprint)
     {
@@ -173,6 +174,7 @@ class GPGMailer
      *
      * @param Message $message The message data
      * @param bool $force      Send even if we don't have a private key?
+     * @return void
      */
     public function sendUnencrypted(Message $message, bool $force = false)
     {
@@ -193,7 +195,7 @@ class GPGMailer
      * Sets the private key for signing.
      *
      * @param string $serverKey
-     * @return GPGMailer
+     * @return self
      */
     public function setPrivateKey(string $serverKey): self
     {
@@ -207,6 +209,7 @@ class GPGMailer
      * @param Message $message
      * @return Message
      * @throws \Exception
+     * @psalm-suppress InvalidScalarArgument Crypt_GPG <= 1.6.1 has the wrong definition in the docblock
      */
     public function sign(Message $message): Message
     {

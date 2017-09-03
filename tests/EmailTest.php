@@ -1,9 +1,10 @@
 <?php
-use \ParagonIE\GPGMailer\GPGMailer;
-use \Zend\Mail\Message;
-use \Zend\Mail\Transport\File;
+use ParagonIE\GPGMailer\GPGMailer;
+use PHPUnit\Framework\TestCase;
+use Zend\Mail\Message;
+use Zend\Mail\Transport\File;
 
-class EmailTest extends PHPUnit_Framework_TestCase
+class EmailTest extends TestCase
 {
     /**
      * @covers GPGMailer::import()
