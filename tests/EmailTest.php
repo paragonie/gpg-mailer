@@ -1,5 +1,6 @@
 <?php
 use ParagonIE\GPGMailer\GPGMailer;
+use ParagonIE\GPGMailer\GPGMailerException;
 use PHPUnit\Framework\TestCase;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\File;
@@ -14,8 +15,8 @@ class EmailTest extends TestCase
      * @covers GPGMailer::export()
      * @throws Crypt_GPG_Exception
      * @throws Crypt_GPG_FileException
-     * @throws Crypt_GPG_KeyNotFoundException
      * @throws PEAR_Exception
+     * @throws GPGMailerException
      */
     public function testImport()
     {
@@ -44,8 +45,8 @@ class EmailTest extends TestCase
      * @covers GPGMailer::encrypt()
      * @throws Crypt_GPG_Exception
      * @throws Crypt_GPG_FileException
-     * @throws Crypt_GPG_KeyNotFoundException
      * @throws PEAR_Exception
+     * @throws GPGMailerException
      */
     public function testEncryptedMessage()
     {

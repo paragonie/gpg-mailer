@@ -19,7 +19,7 @@ class GPGMailer
     protected $mailer;
 
     /**
-     * @var array
+     * @var array<string, string|int|float|bool|null|array>
      */
     protected $options;
 
@@ -30,10 +30,13 @@ class GPGMailer
 
     /**
      * GPGMailer constructor.
+     *
      * @param TransportInterface $transport
-     * @param array $options For Crypt_GPG
+     * @param array<string, string|int|float|bool|null|array> $options
+     *        For Crypt_GPG
      * @param string $serverKey
-     * @throws \PEAR_Exception
+     *
+     * @throws GPGMailerException
      */
     public function __construct(
         TransportInterface $transport,
@@ -54,14 +57,23 @@ class GPGMailer
      * @return string
      * @throws \Crypt_GPG_Exception
      * @throws \Crypt_GPG_FileException
-     * @throws \Crypt_GPG_KeyNotFoundException
+     * @throws GPGMailerException
      * @throws \PEAR_Exception
      */
     public function export(string $fingerprint): string
     {
         $gnupg = new \Crypt_GPG($this->options);
-        $gnupg->addEncryptKey($fingerprint);
-        return $gnupg->exportPublicKey($fingerprint, true);
+        try {
+            $gnupg->addEncryptKey($fingerprint);
+            return $gnupg->exportPublicKey($fingerprint, true);
+        } catch (\PEAR_Exception $ex) {
+            throw new GPGMailerException(
+                'Could not export fingerprint "' . $fingerprint . '": ' .
+                    $ex->getMessage(),
+                $ex->getCode(),
+                $ex
+            );
+        }
     }
 
     /**
@@ -69,21 +81,26 @@ class GPGMailer
      *
      * @param Message $message
      * @return Message
-     * @throws \Crypt_GPG_Exception
      * @throws \Crypt_GPG_FileException
-     * @throws \Crypt_GPG_KeyNotFoundException
+     * @throws GPGMailerException
      * @throws \PEAR_Exception
      */
     public function decrypt(Message $message): Message
     {
         $gnupg = new \Crypt_GPG($this->options);
 
-        $gnupg->addDecryptKey($this->serverKeyFingerprint);
-
-        // Replace the message with its encrypted counterpart
-        $decrypted = $gnupg->decrypt($message->getBodyText());
-
-        return $message->setBody($decrypted);
+        try {
+            $gnupg->addDecryptKey($this->serverKeyFingerprint);
+            // Replace the message with its encrypted counterpart
+            $decrypted = $gnupg->decrypt($message->getBodyText());
+            return (clone $message)->setBody($decrypted);
+        } catch (\PEAR_Exception $ex) {
+            throw new GPGMailerException(
+                'Could not decrypt message: ' . $ex->getMessage(),
+                $ex->getCode(),
+                $ex
+            );
+        }
     }
 
     /**
@@ -94,18 +111,26 @@ class GPGMailer
      * @return Message
      * @throws \Crypt_GPG_Exception
      * @throws \Crypt_GPG_FileException
-     * @throws \Crypt_GPG_KeyNotFoundException
+     * @throws GPGMailerException
      * @throws \PEAR_Exception
      */
     public function encrypt(Message $message, string $fingerprint): Message
     {
         $gnupg = new \Crypt_GPG($this->options);
-        $gnupg->addEncryptKey($fingerprint);
+        try {
+            $gnupg->addEncryptKey($fingerprint);
 
-        // Replace the message with its encrypted counterpart
-        $encrypted = $gnupg->encrypt($message->getBodyText(), true);
+            // Replace the message with its encrypted counterpart
+            $encrypted = $gnupg->encrypt($message->getBodyText(), true);
 
-        return $message->setBody($encrypted);
+            return (clone $message)->setBody($encrypted);
+        } catch (\PEAR_Exception $ex) {
+            throw new GPGMailerException(
+                'Could not encrypt message: ' . $ex->getMessage(),
+                $ex->getCode(),
+                $ex
+            );
+        }
     }
 
     /**
@@ -114,25 +139,32 @@ class GPGMailer
      * @param Message $message
      * @param string $fingerprint
      * @return Message
-     * @throws \Exception
+     * @throws GPGMailerException
      * @throws \Crypt_GPG_Exception
      * @throws \Crypt_GPG_FileException
-     * @throws \Crypt_GPG_KeyNotFoundException
      * @throws \PEAR_Exception
      */
     public function encryptAndSign(Message $message, string $fingerprint): Message
     {
         if (!$this->serverKeyFingerprint) {
-            throw new \Exception('No signing key provided');
+            throw new GPGMailerException('No signing key provided');
         }
         $gnupg = new \Crypt_GPG($this->options);
         $gnupg->addEncryptKey($fingerprint);
         $gnupg->addSignKey($this->serverKeyFingerprint);
 
-        // Replace the message with its encrypted counterpart
-        $encrypted = $gnupg->encryptAndSign($message->getBodyText(), true);
+        try {
+            // Replace the message with its encrypted counterpart
+            $encrypted = $gnupg->encryptAndSign($message->getBodyText(), true);
 
-        return $message->setBody($encrypted);
+            return (clone $message)->setBody($encrypted);
+        } catch (\PEAR_Exception $ex) {
+            throw new GPGMailerException(
+                'Could not encrypt and sign message: ' . $ex->getMessage(),
+                $ex->getCode(),
+                $ex
+            );
+        }
     }
 
     /**
@@ -150,7 +182,7 @@ class GPGMailer
      *
      * @param string $gpgKey An ASCII armored public key
      * @return string The GPG fingerprint for this key
-     * @throws \PEAR_Exception
+     * @throws GPGMailerException
      */
     public function import(string $gpgKey): string
     {
@@ -158,11 +190,14 @@ class GPGMailer
             $gnupg = new \Crypt_GPG($this->options);
             /** @var array<string, string> $data */
             $data = $gnupg->importKey($gpgKey);
+
             return $data['fingerprint'];
-        } catch (\Crypt_GPG_NoDataException $ex) {
-            return '';
-        } catch (\Crypt_GPG_Exception $ex) {
-            return '';
+        } catch (\PEAR_Exception $ex) {
+            throw new GPGMailerException(
+                'Could not import public key: ' . $ex->getMessage(),
+                $ex->getCode(),
+                $ex
+            );
         }
     }
 
@@ -172,9 +207,10 @@ class GPGMailer
      * @param Message $message    The message data
      * @param string $fingerprint Which public key fingerprint to use
      * @return void
+     *
      * @throws \Crypt_GPG_Exception
      * @throws \Crypt_GPG_FileException
-     * @throws \Crypt_GPG_KeyNotFoundException
+     * @throws GPGMailerException
      * @throws \PEAR_Exception
      */
     public function send(Message $message, string $fingerprint)
@@ -198,7 +234,10 @@ class GPGMailer
      * @param Message $message The message data
      * @param bool $force      Send even if we don't have a private key?
      * @return void
-     * @throws \Exception
+     *
+     * @throws GPGMailerException
+     * @throws \Crypt_GPG_FileException
+     * @throws \PEAR_Exception
      */
     public function sendUnencrypted(Message $message, bool $force = false)
     {
@@ -216,11 +255,60 @@ class GPGMailer
     }
 
     /**
+     * @param string $key
+     * @return string|int|float|bool|null|array
+     *
+     * @throws GPGMailerException
+     */
+    public function getOption(string $key)
+    {
+        if (!\array_key_exists($key, $this->options)) {
+            throw new GPGMailerException('Key ' . $key . ' not defined');
+        }
+        return $this->options[$key];
+    }
+
+    /**
+     * @return array<string, string|int|float|bool|null|array>
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
+    /**
+     * Override an option at runtime
+     *
+     * @param string $key
+     * @param string|int|float|bool|null|array $value
+     *
+     * @return self
+     * @throws GPGMailerException
+     */
+    public function setOption(string $key, $value): self
+    {
+        $options = $this->options;
+        $options[$key] = $value;
+        // Try to set this, so it will throw an exception
+        try {
+            (new \Crypt_GPG($options));
+        } catch (\PEAR_Exception $ex) {
+            throw new GPGMailerException(
+                'Could not set option "' . $key . '": ' . $ex->getMessage(),
+                $ex->getCode(),
+                $ex
+            );
+        }
+        $this->options = $options;
+        return $this;
+    }
+
+    /**
      * Sets the private key for signing.
      *
      * @param string $serverKey
      * @return self
-     * @throws \PEAR_Exception
+     * @throws GPGMailerException
      */
     public function setPrivateKey(string $serverKey): self
     {
@@ -229,28 +317,49 @@ class GPGMailer
     }
 
     /**
+     * @param TransportInterface $transport
+     *
+     * @return self
+     */
+    public function setTransport(TransportInterface $transport): self
+    {
+        $this->mailer = $transport;
+        return $this;
+    }
+
+    /**
      * Sign a message (but don't encrypt)
      *
      * @param Message $message
      * @return Message
-     * @throws \Exception
+     *
+     * @throws \Crypt_GPG_FileException
+     * @throws GPGMailerException
+     * @throws \PEAR_Exception
      */
     public function sign(Message $message): Message
     {
         if (!$this->serverKeyFingerprint) {
-            throw new \Exception('No signing key provided');
+            throw new GPGMailerException('No signing key provided');
         }
         $gnupg = new \Crypt_GPG($this->options);
         $gnupg->addSignKey($this->serverKeyFingerprint);
 
-        $message->setBody(
-            $gnupg->sign(
-                $message->getBodyText(),
-                \Crypt_GPG::SIGN_MODE_CLEAR,
-                true
-            )
-        );
-        return $message;
+        try {
+            return (clone $message)->setBody(
+                $gnupg->sign(
+                    $message->getBodyText(),
+                    \Crypt_GPG::SIGN_MODE_CLEAR,
+                    true
+                )
+            );
+        } catch (\PEAR_Exception $ex) {
+            throw new GPGMailerException(
+                'Could not sign message: ' . $ex->getMessage(),
+                $ex->getCode(),
+                $ex
+            );
+        }
     }
 
     /**
@@ -259,7 +368,10 @@ class GPGMailer
      * @param Message $message
      * @param string $fingerprint
      * @return bool
-     * @throws \Exception
+     *
+     * @throws \Crypt_GPG_FileException
+     * @throws GPGMailerException
+     * @throws \PEAR_Exception
      */
     public function verify(Message $message, string $fingerprint): bool
     {
@@ -267,17 +379,26 @@ class GPGMailer
         $gnupg->addSignKey($fingerprint);
 
         /**
-         * @var \Crypt_GPG_Signature[]
+         * @var \Crypt_GPG_Signature[] $verified
          */
-        $verified = $gnupg->verify($message->getBodyText());
-        foreach ($verified as $sig) {
-            if (false) {
-                $sig = new \Crypt_GPG_Signature();
+        try {
+            $verified = $gnupg->verify($message->getBodyText());
+            /**
+             * @var \Crypt_GPG_Signature $sig
+             */
+            foreach ($verified as $sig) {
+                if ($sig->isValid()) {
+                    return true;
+                }
             }
-            if ($sig->isValid()) {
-                return true;
-            }
+            return false;
+        } catch (\PEAR_Exception $ex) {
+            throw new GPGMailerException(
+                'An error occurred trying to verify this message: ' .
+                    $ex->getMessage(),
+                $ex->getCode(),
+                $ex
+            );
         }
-        return false;
     }
 }
