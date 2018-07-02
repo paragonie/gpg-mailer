@@ -1,6 +1,10 @@
 # GPG-Mailer
 
 [![Build Status](https://travis-ci.org/paragonie/gpg-mailer.svg?branch=master)](https://travis-ci.org/paragonie/gpg-mailer)
+[![Latest Stable Version](https://poser.pugx.org/paragonie/gpg-mailer/v/stable)](https://packagist.org/packages/paragonie/gpg-mailer)
+[![Latest Unstable Version](https://poser.pugx.org/paragonie/gpg-mailer/v/unstable)](https://packagist.org/packages/paragonie/gpg-mailer)
+[![License](https://poser.pugx.org/paragonie/gpg-mailer/license)](https://packagist.org/packages/paragonie/gpg-mailer)
+[![Downloads](https://img.shields.io/packagist/dt/paragonie/gpg-mailer.svg)](https://packagist.org/packages/paragonie/gpg-mailer)
 
 Send GPG-encrypted emails (using [zend-mail](https://github.com/zendframework/zend-mail)
 and [Crypt_GPG](https://github.com/pear/Crypt_GPG)).
@@ -46,7 +50,7 @@ public function send(Message $message, string $fingerprint);
 public function sendUnencrypted(Message $message, bool $force = false);
 ```
 
-## Example: Encrypt Outbound Emails with Your GnupG Public Key
+## Example: Encrypt Outbound Emails with Your GnuPG Public Key
 
 ```php
 <?php
