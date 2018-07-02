@@ -33,6 +33,7 @@ class GPGMailer
      * @param TransportInterface $transport
      * @param array $options For Crypt_GPG
      * @param string $serverKey
+     * @throws \PEAR_Exception
      */
     public function __construct(
         TransportInterface $transport,
@@ -51,6 +52,10 @@ class GPGMailer
      *
      * @param string $fingerprint
      * @return string
+     * @throws \Crypt_GPG_Exception
+     * @throws \Crypt_GPG_FileException
+     * @throws \Crypt_GPG_KeyNotFoundException
+     * @throws \PEAR_Exception
      */
     public function export(string $fingerprint): string
     {
@@ -64,6 +69,10 @@ class GPGMailer
      *
      * @param Message $message
      * @return Message
+     * @throws \Crypt_GPG_Exception
+     * @throws \Crypt_GPG_FileException
+     * @throws \Crypt_GPG_KeyNotFoundException
+     * @throws \PEAR_Exception
      */
     public function decrypt(Message $message): Message
     {
@@ -83,6 +92,10 @@ class GPGMailer
      * @param Message $message
      * @param string $fingerprint
      * @return Message
+     * @throws \Crypt_GPG_Exception
+     * @throws \Crypt_GPG_FileException
+     * @throws \Crypt_GPG_KeyNotFoundException
+     * @throws \PEAR_Exception
      */
     public function encrypt(Message $message, string $fingerprint): Message
     {
@@ -102,6 +115,10 @@ class GPGMailer
      * @param string $fingerprint
      * @return Message
      * @throws \Exception
+     * @throws \Crypt_GPG_Exception
+     * @throws \Crypt_GPG_FileException
+     * @throws \Crypt_GPG_KeyNotFoundException
+     * @throws \PEAR_Exception
      */
     public function encryptAndSign(Message $message, string $fingerprint): Message
     {
@@ -133,11 +150,13 @@ class GPGMailer
      *
      * @param string $gpgKey An ASCII armored public key
      * @return string The GPG fingerprint for this key
+     * @throws \PEAR_Exception
      */
     public function import(string $gpgKey): string
     {
         try {
             $gnupg = new \Crypt_GPG($this->options);
+            /** @var array<string, string> $data */
             $data = $gnupg->importKey($gpgKey);
             return $data['fingerprint'];
         } catch (\Crypt_GPG_NoDataException $ex) {
@@ -153,6 +172,10 @@ class GPGMailer
      * @param Message $message    The message data
      * @param string $fingerprint Which public key fingerprint to use
      * @return void
+     * @throws \Crypt_GPG_Exception
+     * @throws \Crypt_GPG_FileException
+     * @throws \Crypt_GPG_KeyNotFoundException
+     * @throws \PEAR_Exception
      */
     public function send(Message $message, string $fingerprint)
     {
@@ -175,6 +198,7 @@ class GPGMailer
      * @param Message $message The message data
      * @param bool $force      Send even if we don't have a private key?
      * @return void
+     * @throws \Exception
      */
     public function sendUnencrypted(Message $message, bool $force = false)
     {
@@ -196,6 +220,7 @@ class GPGMailer
      *
      * @param string $serverKey
      * @return self
+     * @throws \PEAR_Exception
      */
     public function setPrivateKey(string $serverKey): self
     {
@@ -209,7 +234,6 @@ class GPGMailer
      * @param Message $message
      * @return Message
      * @throws \Exception
-     * @psalm-suppress InvalidScalarArgument Crypt_GPG <= 1.6.1 has the wrong definition in the docblock
      */
     public function sign(Message $message): Message
     {

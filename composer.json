@@ -1,11 +1,7 @@
 {
   "name": "paragonie/gpg-mailer",
   "description": "Encrypt outbound emails with Crypt_GPG",
-  "license": [
-    "GPL-3.0+",
-    "MIT",
-    "proprietary"
-  ],
+  "license": "MIT",
   "authors": [
     {
       "name": "Paragon Initiative Enterprises",
@@ -30,7 +26,7 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^6",
-    "vimeo/psalm": "^0|^1"
+    "vimeo/psalm": "^1|^2"
   },
   "require": {
     "php": "^7",

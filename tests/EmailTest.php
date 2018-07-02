@@ -4,11 +4,18 @@ use PHPUnit\Framework\TestCase;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\File;
 
+/**
+ * Class EmailTest
+ */
 class EmailTest extends TestCase
 {
     /**
      * @covers GPGMailer::import()
      * @covers GPGMailer::export()
+     * @throws Crypt_GPG_Exception
+     * @throws Crypt_GPG_FileException
+     * @throws Crypt_GPG_KeyNotFoundException
+     * @throws PEAR_Exception
      */
     public function testImport()
     {
@@ -35,6 +42,10 @@ class EmailTest extends TestCase
     /**
      * @covers GPGMailer::decrypt()
      * @covers GPGMailer::encrypt()
+     * @throws Crypt_GPG_Exception
+     * @throws Crypt_GPG_FileException
+     * @throws Crypt_GPG_KeyNotFoundException
+     * @throws PEAR_Exception
      */
     public function testEncryptedMessage()
     {
@@ -72,6 +83,8 @@ class EmailTest extends TestCase
     /**
      * @covers GPGMailer::sign()
      * @covers GPGMailer::verify()
+     * @throws Exception
+     * @throws PEAR_Exception
      */
     public function testSignedMessage()
     {
