@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace ParagonIE\GPGMailer;
 
-use Zend\Mail\{
+use Laminas\Mail\{
     Message,
     Transport\TransportInterface
 };
@@ -70,7 +70,7 @@ class GPGMailer
             throw new GPGMailerException(
                 'Could not export fingerprint "' . $fingerprint . '": ' .
                     $ex->getMessage(),
-                $ex->getCode(),
+                (int) $ex->getCode(),
                 $ex
             );
         }
@@ -97,7 +97,7 @@ class GPGMailer
         } catch (\PEAR_Exception $ex) {
             throw new GPGMailerException(
                 'Could not decrypt message: ' . $ex->getMessage(),
-                $ex->getCode(),
+                (int) $ex->getCode(),
                 $ex
             );
         }
@@ -127,7 +127,7 @@ class GPGMailer
         } catch (\PEAR_Exception $ex) {
             throw new GPGMailerException(
                 'Could not encrypt message: ' . $ex->getMessage(),
-                $ex->getCode(),
+                (int) $ex->getCode(),
                 $ex
             );
         }
@@ -161,7 +161,7 @@ class GPGMailer
         } catch (\PEAR_Exception $ex) {
             throw new GPGMailerException(
                 'Could not encrypt and sign message: ' . $ex->getMessage(),
-                $ex->getCode(),
+                (int) $ex->getCode(),
                 $ex
             );
         }
@@ -195,7 +195,7 @@ class GPGMailer
         } catch (\PEAR_Exception $ex) {
             throw new GPGMailerException(
                 'Could not import public key: ' . $ex->getMessage(),
-                $ex->getCode(),
+                (int) $ex->getCode(),
                 $ex
             );
         }
@@ -295,7 +295,7 @@ class GPGMailer
         } catch (\PEAR_Exception $ex) {
             throw new GPGMailerException(
                 'Could not set option "' . $key . '": ' . $ex->getMessage(),
-                $ex->getCode(),
+                (int) $ex->getCode(),
                 $ex
             );
         }
@@ -356,7 +356,7 @@ class GPGMailer
         } catch (\PEAR_Exception $ex) {
             throw new GPGMailerException(
                 'Could not sign message: ' . $ex->getMessage(),
-                $ex->getCode(),
+                (int) $ex->getCode(),
                 $ex
             );
         }
@@ -396,7 +396,7 @@ class GPGMailer
             throw new GPGMailerException(
                 'An error occurred trying to verify this message: ' .
                     $ex->getMessage(),
-                $ex->getCode(),
+                (int) $ex->getCode(),
                 $ex
             );
         }

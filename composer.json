@@ -25,12 +25,12 @@
     }
   },
   "require-dev": {
-    "phpunit/phpunit": "^6",
-    "vimeo/psalm": "^1|^2"
+    "phpunit/phpunit": "^8",
+    "vimeo/psalm": "^3"
   },
   "require": {
-    "php": "^7",
-    "zendframework/zend-mail": "^2.8",
+    "php": "^7.2",
+    "laminas/laminas-mail": "^2.8",
     "pear/crypt_gpg": "^1.6"
   }
 }

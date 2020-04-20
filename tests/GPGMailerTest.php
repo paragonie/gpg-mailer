@@ -1,6 +1,6 @@
 <?php
 
-use Zend\Mail\Transport\File;
+use Laminas\Mail\Transport\File;
 use ParagonIE\GPGMailer\GPGMailer;
 use ParagonIE\GPGMailer\GPGMailerException;
 use PHPUnit\Framework\TestCase;
@@ -18,7 +18,7 @@ class GPGMailerTest extends TestCase
     /**
      * @throws GPGMailerException
      */
-    public function setUp()
+    public function setUp(): void
     {
         if (\is_dir(__DIR__ . '/test/')) {
             \rmdir(__DIR__ . '/test/');
@@ -39,6 +39,9 @@ class GPGMailerTest extends TestCase
         $this->assertTrue($gm->getOption('invalid key'));
 
         \mkdir(__DIR__ . '/test/', 0400);
+        if (is_writable(__DIR__ . '/test/')) {
+            $this->markTestSkipped('Inside virtualbox shared folder.');
+        }
         try {
             $gm->setOption('homedir', __DIR__ . '/test/');
             $this->fail('No exception thrown');
