@@ -80,17 +80,18 @@ class GPGMailer
      * Encrypt the body of an email.
      *
      * @param Message $message
+     * @param string $passphrase
      * @return Message
      * @throws \Crypt_GPG_FileException
      * @throws GPGMailerException
      * @throws \PEAR_Exception
      */
-    public function decrypt(Message $message): Message
+    public function decrypt(Message $message, string $passphrase = null): Message
     {
         $gnupg = new \Crypt_GPG($this->options);
 
         try {
-            $gnupg->addDecryptKey($this->serverKeyFingerprint);
+            $gnupg->addDecryptKey($this->serverKeyFingerprint, $passphrase);
             // Replace the message with its encrypted counterpart
             $decrypted = $gnupg->decrypt($message->getBodyText());
             return (clone $message)->setBody($decrypted);
