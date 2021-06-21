@@ -29,7 +29,7 @@
     "vimeo/psalm": "^3"
   },
   "require": {
-    "php": "^7.2",
+    "php": "^7.2|^8",
     "laminas/laminas-mail": "^2.8",
     "pear/crypt_gpg": "^1.6"
   }
