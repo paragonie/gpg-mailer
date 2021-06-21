@@ -174,7 +174,7 @@ class GPGMailer
      */
     public function getTransport(): TransportInterface
     {
-        return $this->getTransport();
+        return $this->mailer;
     }
 
     /**
