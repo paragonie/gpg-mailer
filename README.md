@@ -6,7 +6,7 @@
 [![License](https://poser.pugx.org/paragonie/gpg-mailer/license)](https://packagist.org/packages/paragonie/gpg-mailer)
 [![Downloads](https://img.shields.io/packagist/dt/paragonie/gpg-mailer.svg)](https://packagist.org/packages/paragonie/gpg-mailer)
 
-Send GPG-encrypted emails (using [zend-mail](https://github.com/zendframework/zend-mail)
+Send GPG-encrypted emails (using [laminas-mail](https://github.com/laminas/laminas-mail/)
 and [Crypt_GPG](https://github.com/pear/Crypt_GPG)).
 
 License: MIT
@@ -52,10 +52,10 @@ public function sendUnencrypted(Message $message, bool $force = false);
 ```php
 <?php
 use \ParagonIE\GPGMailer\GPGMailer;
-use \Zend\Mail\Message;
-use \Zend\Mail\Transport\Sendmail;
+use \Laminas\Mail\Message;
+use \Laminas\Mail\Transport\Sendmail;
 
-// First, create a Zend\Mail message as usual:
+// First, create a Laminas\Mail message as usual:
 $message = new Message;
 $message->addTo('test@example.com', 'Test Email');
 $message->setBody('Cleartext for now. Do not worry; this gets encrypted.');
@@ -140,10 +140,10 @@ GPGMailer constructor.
 <?php
 
 use \ParagonIE\GPGMailer\GPGMailer;
-use \Zend\Mail\Message;
-use \Zend\Mail\Transport\Sendmail;
+use \Laminas\Mail\Message;
+use \Laminas\Mail\Transport\Sendmail;
 
-// First, create a Zend\Mail message as usual:
+// First, create a Laminas\Mail message as usual:
 $message = new Message;
 $message->addTo('test@example.com', 'Test Email');
 $message->setBody('Cleartext for now. Do not worry; this gets encrypted.');
@@ -185,10 +185,10 @@ and we use the `sendUnencrypted()` method instead.
 ```php
 <?php
 use \ParagonIE\GPGMailer\GPGMailer;
-use \Zend\Mail\Message;
-use \Zend\Mail\Transport\Sendmail;
+use \Laminas\Mail\Message;
+use \Laminas\Mail\Transport\Sendmail;
 
-// First, create a Zend\Mail message as usual:
+// First, create a Laminas\Mail message as usual:
 $message = new Message;
 $message->addTo('test@example.com', 'Test Email');
 $message->setBody('Cleartext for now. Do not worry; this gets encrypted.');
