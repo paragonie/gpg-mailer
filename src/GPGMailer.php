@@ -206,7 +206,7 @@ class GPGMailer
      *
      * @param Message $message    The message data
      * @param string $fingerprint Which public key fingerprint to use
-     * @return void
+     * @return Message
      *
      * @throws \Crypt_GPG_Exception
      * @throws \Crypt_GPG_FileException
@@ -216,16 +216,20 @@ class GPGMailer
     public function send(Message $message, string $fingerprint)
     {
         if ($this->serverKeyFingerprint) {
+            $encryptedMessage = $this->encryptAndSign($message, $fingerprint);
             $this->mailer->send(
                 // Encrypted, signed
-                $this->encryptAndSign($message, $fingerprint)
+                $encryptedMessage
             );
         } else {
+            $encryptedMessage = $this->encrypt($message, $fingerprint);
             $this->mailer->send(
                 // Encrypted, unsigned
-                $this->encrypt($message, $fingerprint)
+                $encryptedMessage
             );
         }
+        
+        return $encryptedMessage;
     }
 
     /**
